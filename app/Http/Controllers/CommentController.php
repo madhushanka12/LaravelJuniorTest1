@@ -11,6 +11,7 @@ class CommentController extends Controller
     public function index($id)
     {
         $post = Post::find($id);
+
         if(!$post)
         {
             return response([
@@ -19,7 +20,7 @@ class CommentController extends Controller
         }
 
         return response([
-            'post' => $post->comments()->with('user:id,name,image')->get()
+            'comments' => $post->comments()->with('user:id,name,image')->get()
         ], 200);
     }
 
@@ -37,7 +38,7 @@ class CommentController extends Controller
             'comment' => 'required|string'
         ]);
 
-        Comment::created([
+        Comment::create([
             'comment' => $attrs['comment'],
             'post_id' => $id,
             'user_id' => auth()->user()->id

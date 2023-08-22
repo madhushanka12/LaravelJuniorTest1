@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthControler;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\LikeControllerphp;
+use App\Http\Controllers\LikeController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,6 +23,7 @@ Route::post('/login',[AuthControler::class, 'login']);
 Route::group(['middleware' => ['auth:sanctum']], function() {
     
     Route::get('/user',[AuthControler::class, 'user']);
+    Route::put('/user', [AuthController::class, 'update']);
     Route::post('/logout',[AuthControler::class, 'logout']);
 
     Route::get('/posts',[PostController::class, 'index']);
@@ -36,6 +37,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::put('/comments{id}',[CommentController::class, 'update']);
     Route::delete('/comments{id}',[CommentController::class, 'destroy']);
 
-    Route::post('/posts{id}/likes',[LikeController::class, 'likeOrUnlike']);
+    Route::post('/posts/{id}/likes', [LikeController::class, 'likeOrUnlike']);
 
 });

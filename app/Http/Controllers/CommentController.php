@@ -51,7 +51,7 @@ class CommentController extends Controller
 
     public function update(Request $request, $id)
     {
-        $comment = Comment::find(id);
+        $comment = Comment::find($id);
 
         if(!$comment)
         {
@@ -60,7 +60,7 @@ class CommentController extends Controller
             ], 403);
         }
 
-        if(!$comment->user_id != auth()->user()->id)
+        if($comment->user_id != auth()->user()->id)
         {
             return response([
                 'message' => 'Permisiion denied.'
@@ -83,7 +83,7 @@ class CommentController extends Controller
 
     public function destroy($id)
     {
-        $comment = Comment::find(id);
+        $comment = Comment::find($id);
 
         if(!$comment)
         {
@@ -92,7 +92,7 @@ class CommentController extends Controller
             ], 403);
         }
 
-        if(!$comment->user_id != auth()->user()->id)
+        if($comment->user_id != auth()->user()->id)
         {
             return response([
                 'message' => 'Permisiion denied.'

@@ -30,10 +30,15 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $attrs = $request -> validate([
-            'body' => 'required|string'
+            'body' => 'required|string',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $image = $this->saveImage($request->image, 'posts');
+        
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image')->store('posts', 'public'); 
+        }
 
         $post = Post::create([
             'body' => $attrs['body'],
@@ -71,7 +76,8 @@ class PostController extends Controller
         ]);
 
         $post->update([
-            'body' => $attrs['body']
+            'body' => $attrs['body'],
+            
         ]);
 
         return response([
@@ -90,7 +96,7 @@ class PostController extends Controller
             ], 403);
         }
 
-        if(!$post->user_id != auth()->user()->id)
+        if($post->user_id != auth()->user()->id)
         {
             return response([
                 'message' => 'Permisiion denied.'

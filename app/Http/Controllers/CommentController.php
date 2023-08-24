@@ -22,17 +22,17 @@ class CommentController extends Controller
         return response([
             'comments' => $post->comments()->with('user:id,name,image')->get()
         ], 200);
-    }
+    } 
 
     public function store(Request $request, $id)
     {
-        $post = Post::find($id);
+         $post = Post::find($id);
         if(!$post)
         {
             return response([
                 'message' => 'Post not Found.'
             ], 403);
-        }
+        } 
 
         $attrs = $request -> validate([
             'comment' => 'required|string'
@@ -44,9 +44,11 @@ class CommentController extends Controller
             'user_id' => auth()->user()->id
         ]);
 
-        return response([
+        
+         return response([
             'message' => 'Comment created.'
-        ], 200);
+        ], 200); 
+
     }
 
     public function update(Request $request, $id)

@@ -43,10 +43,11 @@ class AuthControler extends Controller
 
        }
 
-        return response([
+         return response([
             'user' => auth()->user(),
             'token' => auth()->user()->createToken('secret')->plainTextToken 
-        ], 200);
+        ], 200); 
+       //return redirect(route('home'));
     }
 
     public function logout()

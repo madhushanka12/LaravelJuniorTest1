@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\CommentNotification;
 use App\Models\Post;
 use App\Models\Comment;
+
 
 class CommentController extends Controller
 {
@@ -22,31 +27,46 @@ class CommentController extends Controller
         return response([
             'comments' => $post->comments()->with('user:id,name,image')->get()
         ], 200);
-    }
+    } 
 
     public function store(Request $request, $id)
     {
-        $post = Post::find($id);
+         $post = Post::find($id);
+    
+
         if(!$post)
         {
             return response([
                 'message' => 'Post not Found.'
             ], 403);
-        }
+        } 
 
-        $attrs = $request -> validate([
-            'comment' => 'required|string'
-        ]);
+         $attrs = $request -> validate([
+            'comment' => 'required|string',
+            
 
+        ]); 
+     
+
+        
         Comment::create([
-            'comment' => $attrs['comment'],
+         'user_id' => Auth::user()->id,
             'post_id' => $id,
-            'user_id' => auth()->user()->id
+            'comment' => $attrs['comment']
+            
         ]);
 
-        return response([
-            'message' => 'Comment created.'
-        ], 200);
+        $data = ['name' => Auth::user()->name, 'data' =>$attrs['comment']];
+    $user = ['to' => Auth::user()->email]; 
+
+Mail::send('email', $data, function ($message) use ($user) {
+    $message->to($user['to'])       
+    ->subject("Comment post"); 
+});
+
+        return back();
+        
+
     }
 
     public function update(Request $request, $id)
@@ -75,13 +95,12 @@ class CommentController extends Controller
             'comment' => $attrs['comment']
         ]);
 
-        return response([
-            'message' => 'Comment updated.'
-        ], 200);
+        return back();
+
 
     }
 
-    public function destroy($id)
+    public function delete($id)
     {
         $comment = Comment::find($id);
 
@@ -101,8 +120,14 @@ class CommentController extends Controller
 
         $comment->delete();
 
-        return response([
-            'message' => 'Comment deleted.'
-        ], 200);
+        return back();
     }
+
+    public function edit($id)
+    {
+        $comment = Comment::findOrFail($id);
+        return view('comment.editcomment', compact('comment'));
+
+    }
+
 }

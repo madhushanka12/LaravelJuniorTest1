@@ -15,7 +15,7 @@
     
 
 <link href="{{ asset('assets/dist/css/bootstrap.min.css') }}" rel="stylesheet">
-
+<!-- <link href="{{ asset('assets/dist/js/jquery-3.7.0.min.js') }}" rel="stylesheet"> -->
 
     <style>
       .bd-placeholder-img {
